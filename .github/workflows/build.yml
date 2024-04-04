@@ -27,7 +27,7 @@ on:
 env:
   BUILDX_CACHE_DIR: ~/.cache/buildx
   CURL_CACHE_DIR: ~/.cache/curl
-  IMAGE_NAME: cisagov/postfix
+  IMAGE_NAME: yyewolf/postfix
   PIP_CACHE_DIR: ~/.cache/pip
   PLATFORMS: "linux/amd64,linux/arm/v6,linux/arm/v7,\
   linux/arm64,linux/ppc64le,linux/s390x"
@@ -262,8 +262,9 @@ jobs:
           fi
           for i in ${TAGS//,/ }
           do
-            TAGS="${TAGS},ghcr.io/${i}"
+            GTAGS="${GTAGS},ghcr.io/${i}"
           done
+          TAGS=GTAGS
           echo "created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
           echo "source_version=$(./bump_version.sh show)" >> $GITHUB_OUTPUT
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
