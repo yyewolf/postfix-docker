@@ -18,7 +18,7 @@ function generate_configs() {
     mkdir -p "/etc/opendkim/keys/${PRIMARY_DOMAIN}"
     opendkim-genkey --verbose --bits=1024 --selector=mail --directory="/etc/opendkim/keys/${PRIMARY_DOMAIN}"
   fi
-  
+
   envsubst '\$PRIMARY_DOMAIN \$RELAY_IP' < templates/TrustedHosts > /etc/opendkim/TrustedHosts
   cp /etc/default/opendkim.orig /etc/default/opendkim
   echo 'SOCKET="inet:12301"' >> /etc/default/opendkim
