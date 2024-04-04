@@ -13,13 +13,15 @@ function generate_configs() {
   envsubst '\$PRIMARY_DOMAIN \$RELAY_IP' < templates/opendkim.conf > /etc/opendkim.conf
 
   # configure opendkim
-  echo "Generating opendkim configurations for ${PRIMARY_DOMAIN}"
-  mkdir -p "/etc/opendkim/keys/${PRIMARY_DOMAIN}"
-  opendkim-genkey --verbose --bits=1024 --selector=mail --directory="/etc/opendkim/keys/${PRIMARY_DOMAIN}"
-  envsubst '\$PRIMARY_DOMAIN \$RELAY_IP' < templates/TrustedHosts > /etc/opendkim/TrustedHosts
-  cp /etc/default/opendkim.orig /etc/default/opendkim
-  echo 'SOCKET="inet:12301"' >> /etc/default/opendkim
-  chown -R opendkim:opendkim /etc/opendkim
+  if [[ ! -f /etc/opendkim/keys/${PRIMARY_DOMAIN} ]] then
+    echo "Generating opendkim configurations for ${PRIMARY_DOMAIN}"
+    mkdir -p "/etc/opendkim/keys/${PRIMARY_DOMAIN}"
+    opendkim-genkey --verbose --bits=1024 --selector=mail --directory="/etc/opendkim/keys/${PRIMARY_DOMAIN}"
+    envsubst '\$PRIMARY_DOMAIN \$RELAY_IP' < templates/TrustedHosts > /etc/opendkim/TrustedHosts
+    cp /etc/default/opendkim.orig /etc/default/opendkim
+    echo 'SOCKET="inet:12301"' >> /etc/default/opendkim
+    chown -R opendkim:opendkim /etc/opendkim
+  fi
 
   # configure opendmarc
   echo "Generating opendmarc configurations for ${PRIMARY_DOMAIN}"
